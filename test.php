@@ -1,104 +1,90 @@
-
-﻿<!----Rhoda 2017/12/03 修改---->
-
+<!----Rhoda 2017/12/03 修改---->
 <?php
 include( 'connect.php' );
 ?>
 
 <!doctype html>
 <html>
-
 <head>
-	<meta charset="utf-8">
-
-	<title>問卷統整</title>
-
+<meta charset="utf-8">
+<title>問卷統整</title>
 </head>
 
 <body>
-	<table width="200" border="0" style="border:1px #000000 solid;text-align: center;" RULES=ALL>
-		<tbody>
-	<?php
-		//查詢不含DATE的標題
-		$sql="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where Table_Name ='lime_survey_12' and DATA_TYPE not like 'datetime'";
-		$result = mysql_query($sql);
-		$count_bar=mysql_num_rows($result); 
-    	for($i=0;$i<$count_bar;$i++){ 
-			$array_bar[$i]=mysql_fetch_array($result);
-	 	};
+	<table width="200" border="1" style="text-align: center;" RULES=ALL>
+  		<tbody>
+    		
+    			<?php
+					//lime_survey_12
+					$all="SELECT * FROM `lime_survey_12`";
+    				$result_all = mysql_query($all) or die('query error0');
+					$count_all=mysql_num_rows($result_all); 
 
-        //第一題
-		$sql_x="SELECT * FROM `lime_questions` WHERE `qid`='860' AND `language`='zh-Hant-TW'";
-		$result_x = mysql_query($sql_x);
-		while($w_x = mysql_fetch_assoc($result_x)){
-			echo "<td>";
-			echo $w_x['question'];
-			echo "</td>";
-		}
+    				for($i=0;$i<$count_all;$i++){ 
+						$array_all[$i]=mysql_fetch_array($result_all);
+	 				};
+					
+					//answer
+					$ans="SELECT * FROM `lime_answers`";
+    				$result_ans = mysql_query($ans) or die('query error0');
+					$count_ans=mysql_num_rows($result_ans); 
 
-		//前五個	
-		for($i=0;$i<$count_bar;$i++){ 
-			if($i<5){
-				echo "<td>";
-				echo $array_bar[$i]['COLUMN_NAME'];
-				echo "</td>";	
-				}
+    				for($j=0;$j<$count_ans;$j++){ 
+						$array_ans[$j]=mysql_fetch_array($result_ans);
+	 				};
+			
+					//question
+					$qen="SELECT * FROM `lime_questions`";
+    				$result_qen = mysql_query($qen) or die('query error0');
+					$count_qen=mysql_num_rows($result_qen); 
 
-		}
-		//正常的後面
-		for($i=6;$i<$count_bar;$i++){
-            $j=$i+1;
-            /*zihan 17/12/03 修改*/ 
-            $firstQid= mb_substr(explode("X",$array_bar[$i]['COLUMN_NAME'])[2],0,3,"utf-8"); //取qid碼 
-            $secondQid= mb_substr(explode("X",$array_bar[$j]['COLUMN_NAME'])[2],0,3,"utf-8"); //取下次qid碼 
-            /*zihan 17/12/03 修改*/ 
-			if($firstQid!=$secondQid){  //比對這次的qid是否與下次相同
-				$sql_x="SELECT * FROM `lime_questions` WHERE `qid`='$firstQid' AND `language`='zh-Hant-TW'";
-				$result_x = mysql_query($sql_x);
-				while($w_x = mysql_fetch_assoc($result_x)){	
-       		if($w_x['type']=='M'||$w_x['type']=='F'){
-						$sql_title="SELECT * FROM `lime_questions` WHERE `parent_qid`='$firstQid' AND `language`='zh-Hant-TW'";
-						$result_title = mysql_query($sql_title);
-						while($w_title = mysql_fetch_assoc($result_title)){
-							echo "<td>";
-							echo $w_x['question'].$w_title['question'];
-							echo "</td>";	
+    				for($k=0;$k<$count_qen;$k++){ 
+						$array_qen[$k]=mysql_fetch_array($result_qen);
+						if($array_qen[$k]['language']!='zh-Hant-TW'){
+							unset($array_qen[$k]);
 						}
-					}else{
-						echo "<td>";
-						echo $w_x['question'];
-						echo "</td>";
+						//print_r($array_qen[$k]);echo '<br><br>';
+	 				};
+					
+					for($i=8;$i<$count_all;$i++){
+						$a=$i+1;
+						$first=explode("X",$array_all[$i]);
+						$second=explode("X",$array_all[$a]);
+            			$firstQid=mb_substr($first[2],0,3,"utf-8"); //取qid碼 
+            			$secondQid=mb_substr($second[2],0,3,"utf-8"); //取下次qid碼 
+						echo $firstQid;
+						/*if($firstQid!=$secondQid){
+							if($firstQid==$array_qen[$k]['qid']){
+								echo '01';
+							}
+						}*/
 					}
-					if($w_x['other']=='Y'){
-						echo "<td>";
-						echo $w_x['question']."其他";
-						echo "</td>";
-					}
-    
+					/*for($i=0;$i<$count_all;$i++){ 
+						echo "<tr><td>";
+						echo $array_all[$i]['id'];
+						echo "</tr></td>";
+	 				};*/
+				?>
+     			<?php
+					//lime_survey_12`
+					/*$all="SELECT * FROM `lime_survey_12` WHERE `submitdate` is not null ";
+ 					$result_all = mysql_query($all);
+ 					while($rs = mysql_fetch_assoc($result_all)){
+ 						echo '<tr>';
+ 						foreach ($rs as $key=>$value){
+ 							if($key!='id' && $key!='token' && $key!='submitdate' && $key!='lastpage' && $key!='startlanguage' && $key!='startdate' && $key!='datestamp' && $key!='ipaddr'){
+								echo "<td>";
+								echo $value;
+								echo "</td>";
+ 				
+ 							}
+						}
+					}*/
+				?>
+  </tbody>
+</table>
 
 
-				}
-				
-			}	
-	 	}
-
-		//表格內容
-		$sql="SELECT * FROM `lime_survey_12` WHERE `submitdate` is not null ";
-		$result = mysql_query($sql);
-		
-		while($rs = mysql_fetch_assoc($result)){
-			echo '<tr>';
-			foreach ($rs as $key=>$value){
-				if($key!='submitdate' && $key!='startdate' && $key!='datestamp'){
-					echo "<td>";
-					echo $value;
-					echo "</td>";
-				 }
-			}
-			echo '</tr>';
-		}?>
-		</tbody>
-	</table>
 </body>
 
 </html>

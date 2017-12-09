@@ -24,6 +24,32 @@
 			$count_choose=mysql_num_rows($result_choose); 
 			array_push($ans,$count_choose);
 		}
+	
+		//男
+		$allboy="SELECT * FROM `lime_survey_12` WHERE `12X12X775D101`='1'";
+		$result_allboy = mysql_query($allboy);
+		$count_allboy=mysql_num_rows($result_allboy); 
+
+		$ans_boy=array();
+		for($j=1;$j<=5;$j++){
+			$boy="SELECT * FROM `lime_survey_12` WHERE `12X12X775D101`='1' AND `12X9X8591`='$j'";
+			$result_boy = mysql_query($boy);
+			$count_boy=mysql_num_rows($result_boy);
+			array_push($ans_boy,$count_boy);
+		}
+	
+		//女
+		$allgl="SELECT * FROM `lime_survey_12` WHERE `12X12X775D101`='2'";
+		$result_allgl = mysql_query($allgl);
+		$count_allgl=mysql_num_rows($result_allgl); 
+
+		$ans_gl=array();
+		for($j=1;$j<=5;$j++){
+			$gl="SELECT * FROM `lime_survey_12` WHERE `12X12X775D101`='2' AND `12X9X8591`='$j'";
+			$result_gl = mysql_query($gl);
+			$count_gl=mysql_num_rows($result_gl);
+			array_push($ans_gl,$count_gl);
+		}
 	?>
 	<h2>請問您現在位於哪一個景點？</h2>
 	<table width="852" border="1" style="text-align: center;" RULES=ALL>
@@ -49,21 +75,21 @@
     <tr>
       <td width="100" rowspan="2">性別</td>
       <td width="100">男</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><?php echo $count_allboy?></td>
+      <td><?php echo $ans_boy[0]?></td>
+      <td><?php echo $ans_boy[1]?></td>
+      <td><?php echo $ans_boy[2]?></td>
+      <td><?php echo $ans_boy[3]?></td>
+      <td><?php echo $ans_boy[4]?></td>
     </tr>
     <tr>
       <td>女</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><?php echo $count_allgl?></td>
+      <td><?php echo $ans_gl[0]?></td>
+      <td><?php echo $ans_gl[1]?></td>
+      <td><?php echo $ans_gl[2]?></td>
+      <td><?php echo $ans_gl[3]?></td>
+      <td><?php echo $ans_gl[4]?></td>
     </tr>
     <tr>
       <td rowspan="6">年齡</td>
