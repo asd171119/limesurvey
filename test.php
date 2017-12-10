@@ -1,4 +1,4 @@
-<!----Rhoda 2017/12/03 修改---->
+<!----Rhoda 2017/12/010 修改---->
 <?php
 include( 'connect.php' );
 ?>
@@ -22,16 +22,17 @@ include( 'connect.php' );
  					$result_all = mysql_query($all);
 					$count_all=mysql_num_rows($result_all);
  					while($rs = mysql_fetch_assoc($result_all)){
+						//取key
 						$array_key=array();
  						foreach ($rs as $key=>$value){
 							array_push($array_key,$key);
-						}
+						}$count_key=count($array_key);
 						//刪除前8個
 						for($i=0;$i<8;$i++){
 							unset($array_key[$i]);
 						}
 					}
-					$count_key=count($array_key);
+					
 			
 					//answer
 					$ans="SELECT * FROM `lime_answers`";
@@ -40,6 +41,9 @@ include( 'connect.php' );
 
     				for($j=0;$j<$count_ans;$j++){ 
 						$array_ans[$j]=mysql_fetch_array($result_ans);
+						if($array_ans[$j]['language']!='zh-Hant-TW'){
+							unset($array_ans[$j]);
+						}
 	 				};
 			
 					//question
@@ -54,7 +58,7 @@ include( 'connect.php' );
 						}
 						//print_r($array_qen[$k]);echo '<br><br>';
 	 				};
-					
+					//找題目
 					for($i=8;$i<$count_key;$i++){
 						$a=$i+1;
 						$first=explode("X",$array_key[$i]);
@@ -62,12 +66,33 @@ include( 'connect.php' );
             			$firstQid=mb_substr($first[2],0,3,"utf-8"); //取qid碼 
             			$secondQid=mb_substr($second[2],0,3,"utf-8"); //取下次qid碼 
 					
-						if($firstQid!=$secondQid){
+						if($firstQid!=$secondQid){$cc=array(); //array_push($cc,$firstQid); print_r($cc);
 							for($k=0;$k<$count_qen;$k++){
 								if($firstQid==$array_qen[$k]['qid']){
-									echo "<td>";
-									echo $array_qen[$k]['question'];
-									echo "</td>";
+									if($array_qen[$k]['type']=='M'){//||$array_qen[$k]['type']=='F'
+										for($kk=0;$kk<$count_qen;$kk++){
+											if($firstQid==$array_qen[$kk]['parent_qid']){
+												echo "<td>";
+												echo $array_qen[$kk]['question'];
+												echo "</td>";
+											}
+										}
+									}else{
+										for($j=0;$j<$count_ans;$j++){
+											if($firstQid==$array_ans[$j]['qid']){
+												echo "<td>";
+												echo $array_ans[$j]['answer'];
+												echo "</td>";
+											}/*else{
+												echo "<td>";
+												echo $array_qen[$j]['question'];
+												echo "</td>";
+											}*/
+										}
+									}
+									if($array_qen[$k]['other']=='Y'){
+										echo "<td>其他</td>";
+									}
 								}
 								
 							}
@@ -86,11 +111,6 @@ include( 'connect.php' );
 						}
 						echo "</tr>";
 					}
-					/*for($i=0;$i<$count_all;$i++){ 
-						echo "<tr><td>";
-						echo $array_all[$i]['id'];
-						echo "</tr></td>";
-	 				};*/
 				?>
      			<?php
 					//lime_survey_12
