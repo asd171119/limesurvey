@@ -71,6 +71,9 @@ include( 'connect.php' );
   	</tbody>
 </table>
 <!-------------------------------------------------------------------------------------------------------------------------------------->
+<table width="200" border="1" style="text-align: center;" RULES=ALL>
+  <tbody>
+    <tr>	
 	<?php
 		//lime_survey_12
 		$all="SELECT * FROM `lime_survey_12`";
@@ -91,27 +94,91 @@ include( 'connect.php' );
 				}
 				
 		}
+		//key分類ABC
 		for($i=8;$i<$count_key;$i++){
 			$abc=explode("X",$array_key[$i]);
-			if($abc[1]=='12'){
-				array_push($D,$array_key[$i]);
-			}else{
+			if($abc[1]!='12'){
 				array_push($ABC,$array_key[$i]);
-			 }
+			}
 		}//print_r($ABC);
 		$count_abc=count($ABC);
-		$count_d=count($D);
-		for($a=0;$a<$count_abc;$a++){
-			for($b=0;$b<$count_d;$b++){
-				$abcd="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `$D[$b]` IS NOT NULL GROUP BY  `$ABC[$a]`";
-    			$result_abcd = mysql_query($abcd) or die('query error0');
-				$count_abcd=mysql_num_rows($result_abcd); 
+		//sex
+		$sql_sex="SELECT `code` FROM `lime_answers` WHERE `qid`='775' AND `language`='zh-Hant-TW'";
+ 		$result_sex = mysql_query($sql_sex);
+		$count_sex=mysql_num_rows($result_sex); 
+	//echo $count_sex;
+     	for($i=0;$i<$count_sex;$i++){ 
+ 			$array_sex[$i]=mysql_fetch_array($result_sex);
+ 	 	};
+ 		//age
+		$sql_age="SELECT `code` FROM `lime_answers` WHERE `qid`='776' AND `language`='zh-Hant-TW'";
+ 		$result_age = mysql_query($sql_age);
+		$count_age=mysql_num_rows($result_age); 
+	
+     	for($i=0;$i<$count_age;$i++){ 
+ 			$array_age[$i]=mysql_fetch_array($result_age);
+ 	 	};//print_r($array_age);
+		//education
+		$sql_educaton="SELECT `code` FROM `lime_answers` WHERE `qid`='777' AND `language`='zh-Hant-TW'";
+ 		$result_educaton = mysql_query($sql_educaton);
+		$count_educaton=mysql_num_rows($result_educaton); 
+	
+     	for($i=0;$i<$count_educaton;$i++){ 
+ 			$array_educaton[$i]=mysql_fetch_array($result_educaton);
+ 	 	};//print_r($array_educaton);
+		//job
+		$sql_job="SELECT `code` FROM `lime_answers` WHERE `qid`='778' AND `language`='zh-Hant-TW'";
+ 		$result_job = mysql_query($sql_job);
+		$count_job=mysql_num_rows($result_job); 
+	
+     	for($i=0;$i<$count_job;$i++){ 
+ 			$array_job[$i]=mysql_fetch_array($result_job);
+ 	 	};//print_r($array_job);
+		//money
+		$sql_money="SELECT `code` FROM `lime_answers` WHERE `qid`='779' AND `language`='zh-Hant-TW'";
+ 		$result_money = mysql_query($sql_money);
+		$count_money=mysql_num_rows($result_money); 
+	
+     	for($i=0;$i<$count_money;$i++){ 
+ 			$array_money[$i]=mysql_fetch_array($result_money);
+ 	 	};//print_r($array_money);
+		//live
+		$sql_live="SELECT `code` FROM `lime_answers` WHERE `qid`='780' AND `language`='zh-Hant-TW'";
+ 		$result_live = mysql_query($sql_live);
+		$count_live=mysql_num_rows($result_live); 
+	
+     	for($i=0;$i<$count_live;$i++){ 
+ 			$array_live[$i]=mysql_fetch_array($result_live);
+ 	 	};//print_r($array_live);
+		
+		//sql_sex
+		for($b=0;$b<$count_sex;$b++){
+			for($a=0;$a<$count_abc;$a++){
+				//echo $count_sex;
+				$aa=$array_sex[$b]['code'];
+				//echo $aa."<br>";
+				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101`='$aa' GROUP BY  `$ABC[$a]`";
+				//echo $sex."<br>";
+    			$result_sqlsex = mysql_query($sex) or die('query error0');
+				$count_sqlsex=mysql_num_rows($result_sqlsex); 
+			
+				for($j=0;$j<$count_sqlsex;$j++){ 
+					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);	
+					//echo "<tr><td>".$array_sqlsex[$j][0]."</td>";
+					//echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td></tr>";
+					print_r($array_sqlsex);
+	 			}
 			}
 		}
-		for($j=0;$j<$count_abcd;$j++){ 
-			$array_abcd[$j]=mysql_fetch_array($result_abcd);	
-	 	}print_r($array_abcd);
-				
+		for($j=0;$j<$count_sqlsex;$j++){ 
+					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);	
+					//echo "<tr><td>".$array_sqlsex[$j][0]."</td>";
+					//echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td></tr>";
+					//print_r($array_sqlsex);
+	 		}
 	?>
+		</tr>
+  	</tbody>
+</table>
 </body>
 </html>
