@@ -19,18 +19,18 @@ include( 'connect.php' );
   <tbody>
     <tr>
 	<?php //印題目
-		/*$sql="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where Table_Name ='lime_survey_12' and DATA_TYPE not like 'datetime'";
+		$sql="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where Table_Name ='lime_survey_12' and DATA_TYPE not like 'datetime'";
  		$result = mysql_query($sql);
  		$count_all=mysql_num_rows($result); 
      	for($i=0;$i<$count_all;$i++){ 
  			$array_all[$i]=mysql_fetch_array($result);
  	 	};
          //第一題
- 		$sql_x="SELECT * FROM `lime_questions` WHERE `qid`='860' AND `language`='zh-Hant-TW'";
+ 		$sql_x="SELECT * FROM `lime_answers` WHERE `qid`='859' AND `language`='zh-Hant-TW'";
  		$result_x = mysql_query($sql_x);
  		while($w_x = mysql_fetch_assoc($result_x)){
  			echo "<td>";
- 			echo $w_x['question'];
+ 			echo $w_x['answer'];
  			echo "</td>";
  		}
  		//正常的後面
@@ -44,28 +44,32 @@ include( 'connect.php' );
  				$sql_x="SELECT * FROM `lime_questions` WHERE `qid`='$firstQid' AND `language`='zh-Hant-TW'";
  				$result_x = mysql_query($sql_x);
  				while($w_x = mysql_fetch_assoc($result_x)){	
- 					if($w_x['type']=='M'||$w_x['type']=='F'){
+ 					if($w_x['type']=='M'){//||$w_x['type']=='F'
  						$sql_title="SELECT * FROM `lime_questions` WHERE `parent_qid`='$firstQid' AND `language`='zh-Hant-TW'";
  						$result_title = mysql_query($sql_title);
  						while($w_title = mysql_fetch_assoc($result_title)){
  							echo "<td>";
- 							echo $w_x['question'].$w_title['question'];
+ 							echo $w_title['question'];
  							echo "</td>";	
  						}
  					}else{
- 						echo "<td>";
- 						echo $w_x['question'];
- 						echo "</td>";
+						$sql_ans="SELECT * FROM `lime_answers` WHERE `qid`='$firstQid' AND `language`='zh-Hant-TW'";
+ 						$result_ans = mysql_query($sql_ans);
+ 						while($w_ans = mysql_fetch_assoc($result_ans)){
+ 							echo "<td>";
+ 							echo $w_ans['answer'];
+ 							echo "</td>";	
+ 						}
  					}
  					if($w_x['other']=='Y'){
  						echo "<td>";
- 						echo $w_x['question']."其他";
+ 						echo "其他";
  						echo "</td>";
  					}
  				}
  				
  			}	
- 	 	}*/
+ 	 	}
 		?> 
 		</tr>
   	</tbody>
@@ -119,12 +123,12 @@ include( 'connect.php' );
  			$array_age[$i]=mysql_fetch_array($result_age);
  	 	};//print_r($array_age);
 		//education
-		$sql_educaton="SELECT `code` FROM `lime_answers` WHERE `qid`='777' AND `language`='zh-Hant-TW'";
- 		$result_educaton = mysql_query($sql_educaton);
-		$count_educaton=mysql_num_rows($result_educaton); 
+		$sql_education="SELECT `code` FROM `lime_answers` WHERE `qid`='777' AND `language`='zh-Hant-TW'";
+ 		$result_education = mysql_query($sql_education);
+		$count_education=mysql_num_rows($result_education); 
 	
-     	for($i=0;$i<$count_educaton;$i++){ 
- 			$array_educaton[$i]=mysql_fetch_array($result_educaton);
+     	for($i=0;$i<$count_education;$i++){ 
+ 			$array_education[$i]=mysql_fetch_array($result_education);
  	 	};//print_r($array_educaton);
 		//job
 		$sql_job="SELECT `code` FROM `lime_answers` WHERE `qid`='778' AND `language`='zh-Hant-TW'";
@@ -153,29 +157,107 @@ include( 'connect.php' );
 		
 		//sql_sex
 		for($b=0;$b<$count_sex;$b++){
+			echo "<tr>";
 			for($a=0;$a<$count_abc;$a++){
-				//echo $count_sex;
 				$aa=$array_sex[$b]['code'];
-				//echo $aa."<br>";
 				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101`='$aa' GROUP BY  `$ABC[$a]`";
-				//echo $sex."<br>";
     			$result_sqlsex = mysql_query($sex) or die('query error0');
 				$count_sqlsex=mysql_num_rows($result_sqlsex); 
 			
 				for($j=0;$j<$count_sqlsex;$j++){ 
 					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);	
-					//echo "<tr><td>".$array_sqlsex[$j][0]."</td>";
-					//echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td></tr>";
-					print_r($array_sqlsex);
+					//echo "<td>".$array_sqlsex[$j][0]."</td>";
+					echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td>";
+					//print_r($array_sqlsex);
+	 			}
+				
+			}
+		}echo "</tr>";
+		//sql_age
+		for($b=0;$b<$count_age;$b++){
+			echo "<tr>";
+			for($a=0;$a<$count_abc;$a++){
+				$aa=$array_age[$b]['code'];
+				$age="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X776`='$aa' GROUP BY  `$ABC[$a]`";
+    			$result_sqlage = mysql_query($age) or die('query error0');
+				$count_sqlage=mysql_num_rows($result_sqlage); 
+			
+				for($j=0;$j<$count_sqlage;$j++){ 
+					$array_sqlage[$j]=mysql_fetch_array($result_sqlage);	
+					//echo "<tr><td>".$array_sqlage[$j][0]."</td>";
+					echo "<td>".$array_sqlage[$j]['COUNT( * )']."</td>";
+					//print_r($array_sqlsex);
 	 			}
 			}
-		}
-		for($j=0;$j<$count_sqlsex;$j++){ 
-					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);	
-					//echo "<tr><td>".$array_sqlsex[$j][0]."</td>";
-					//echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td></tr>";
+		}echo "</tr>";
+		//sql_education
+		for($b=0;$b<$count_education;$b++){
+			echo "<tr>";
+			for($a=0;$a<$count_abc;$a++){
+				$aa=$array_education[$b]['code'];
+				$education="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X777SQ301`='$aa' GROUP BY  `$ABC[$a]`";
+    			$result_sqleducation = mysql_query($education) or die('query error0');
+				$count_sqleducation=mysql_num_rows($result_sqleducation); 
+			
+				for($j=0;$j<$count_sqleducation;$j++){ 
+					$array_sqleducation[$j]=mysql_fetch_array($result_sqleducation);	
+					//echo "<tr><td>".$array_sqleducation[$j][0]."</td>";
+					echo "<td>".$array_sqleducation[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
-	 		}
+	 			}
+			}
+		}echo "</tr>";
+		//sql_job
+		for($b=0;$b<$count_job;$b++){
+			echo "<tr>";
+			for($a=0;$a<$count_abc;$a++){
+				$aa=$array_job[$b]['code'];
+				$job="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X778`='$aa' GROUP BY  `$ABC[$a]`";
+    			$result_sqljob = mysql_query($job) or die('query error0');
+				$count_sqljob=mysql_num_rows($result_sqljob); 
+			
+				for($j=0;$j<$count_sqljob;$j++){ 
+					$array_sqljob[$j]=mysql_fetch_array($result_sqljob);	
+					//echo "<tr><td>".$array_sqljob[$j][0]."</td>";
+					echo "<td>".$array_sqljob[$j]['COUNT( * )']."</td>";
+					//print_r($array_sqlsex);
+	 			}
+			}
+		}echo "</tr>";
+		//sql_money
+		for($b=0;$b<$count_money;$b++){
+			echo "<tr>";
+			for($a=0;$a<$count_abc;$a++){
+				$aa=$array_money[$b]['code'];
+				$money="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X779D501`='$aa' GROUP BY  `$ABC[$a]`";
+    			$result_sqlmoney = mysql_query($money) or die('query error0');
+				$count_sqlmoney=mysql_num_rows($result_sqlmoney); 
+			
+				for($j=0;$j<$count_sqlmoney;$j++){ 
+					$array_sqlmoney[$j]=mysql_fetch_array($result_sqlmoney);	
+					//echo "<tr><td>".$array_sqlmoney[$j][0]."</td>";
+					echo "<td>".$array_sqlmoney[$j]['COUNT( * )']."</td>";
+					//print_r($array_sqlsex);
+	 			}
+			}
+		}echo "</tr>";
+		//sql_live
+		for($b=0;$b<$count_live;$b++){
+			echo "<tr>";
+			for($a=0;$a<$count_abc;$a++){
+				$aa=$array_live[$b]['code'];
+				$live="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X780`='$aa' GROUP BY  `$ABC[$a]`";
+    			$result_sqllive = mysql_query($live) or die('query error0');
+				$count_sqllive=mysql_num_rows($result_sqllive); 
+			
+				for($j=0;$j<$count_sqllive;$j++){ 
+					$array_sqllive[$j]=mysql_fetch_array($result_sqllive);	
+					//echo "<tr><td>".$array_sqllive[$j][0]."</td>";
+					echo "<td>".$array_sqllive[$j]['COUNT( * )']."</td>";
+					//print_r($array_sqlsex);
+	 			}
+			}
+		}echo "</tr>";
 	?>
 		</tr>
   	</tbody>
