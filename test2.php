@@ -19,7 +19,7 @@ include( 'connect.php' );
   <tbody>
     <tr>
 	<?php //印題目
-		$sql="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where Table_Name ='lime_survey_12' and DATA_TYPE not like 'datetime'";
+		/*$sql="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where Table_Name ='lime_survey_12' and DATA_TYPE not like 'datetime'";
  		$result = mysql_query($sql);
  		$count_all=mysql_num_rows($result); 
      	for($i=0;$i<$count_all;$i++){ 
@@ -69,7 +69,7 @@ include( 'connect.php' );
  				}
  				
  			}	
- 	 	}
+ 	 	}*/
 		?> 
 		</tr>
   	</tbody>
@@ -79,6 +79,24 @@ include( 'connect.php' );
   <tbody>
     <tr>	
 	<?php
+		//answer
+		$sql_answer="SELECT `qid`,`code` FROM `lime_answers` WHERE `language`='zh-Hant-TW'";
+ 		$result_answer = mysql_query($sql_answer);
+		$count_answer=mysql_num_rows($result_answer); 
+	
+     	for($i=0;$i<$count_answer;$i++){ 
+ 			$array_answer[$i]=mysql_fetch_array($result_answer);
+ 	 	};//print_r($array_answer);
+		
+		//question
+		$sql_question="SELECT `qid`,`type` FROM `lime_questions` WHERE `language`='zh-Hant-TW'";
+ 		$result_question = mysql_query($sql_question);
+		$count_question=mysql_num_rows($result_question); 
+	
+     	for($i=0;$i<$count_question;$i++){ 
+ 			$array_question[$i]=mysql_fetch_array($result_question);
+ 	 	};//print_r($array_question);
+		
 		//lime_survey_12
 		$all="SELECT * FROM `lime_survey_12`";
  		$result_all = mysql_query($all);
@@ -106,11 +124,12 @@ include( 'connect.php' );
 			}
 		}//print_r($ABC);
 		$count_abc=count($ABC);
+		
 		//sex
 		$sql_sex="SELECT `code` FROM `lime_answers` WHERE `qid`='775' AND `language`='zh-Hant-TW'";
  		$result_sex = mysql_query($sql_sex);
 		$count_sex=mysql_num_rows($result_sex); 
-	//echo $count_sex;
+	
      	for($i=0;$i<$count_sex;$i++){ 
  			$array_sex[$i]=mysql_fetch_array($result_sex);
  	 	};
@@ -154,8 +173,9 @@ include( 'connect.php' );
      	for($i=0;$i<$count_live;$i++){ 
  			$array_live[$i]=mysql_fetch_array($result_live);
  	 	};//print_r($array_live);
-		
+//sql----------------------------------------------------------------------------------------------------------------------------------//
 		//sql_sex
+		$f=array();
 		for($b=0;$b<$count_sex;$b++){
 			echo "<tr>";
 			for($a=0;$a<$count_abc;$a++){
@@ -165,14 +185,41 @@ include( 'connect.php' );
 				$count_sqlsex=mysql_num_rows($result_sqlsex); 
 			
 				for($j=0;$j<$count_sqlsex;$j++){ 
-					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);	
-					//echo "<td>".$array_sqlsex[$j][0]."</td>";
-					echo "<td>".$array_sqlsex[$j]['COUNT( * )']."</td>";
-					//print_r($array_sqlsex);
-	 			}
-				
+					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);
+					if($array_sqlsex[$j][0]==""&&$array_sqlsex[$j][0]=='-oth-'){
+						unset($array_sqlsex[$j]);
+					}//echo $array_sqlsex[$j][0]." ".$array_sqlsex[$j][1]."<br>";
+				}//print_r($array_sqlsex);
+				$first=explode("X",$ABC[$a]);
+				$second=explode("X",$ABC[$a+1]);
+				$firstQid=mb_substr($first[2],0,3,"utf-8");
+				$secondQid=mb_substr($second[2],0,3,"utf-8");//echo $firstQid." ".$secondQid."<br>";	
+				if($firstQid!=$secondQid){
+					for($i=0;$i<$count_question;$i++){ 	
+						if($firstQid==$array_question[$i]['qid']){	
+							if($array_question[$i]['type']!='M'){//如果不是多選
+								for($ii=0;$ii<$count_answer;$ii++){ //比對選項數量
+									if($firstQid==$array_answer[$ii]['qid']){
+										$f_count+=1;
+									}
+								}
+								for($x=1;$x<=$f_count;$x++){
+									for($j=0;$j<$count_sqlsex;$j++){ 
+										if(in_array($x,$array_sqlsex[$j][0])==false){
+											echo "<td>0</td>";
+										}else{
+											echo "<td>".$array_sqlsex[$j][1]."</td>";
+										}
+									}
+								}
+								$f_count=0;
+							}
+						}
+					}
+				}
 			}
-		}echo "</tr>";
+		}
+		echo "</tr>";
 		//sql_age
 		for($b=0;$b<$count_age;$b++){
 			echo "<tr>";
@@ -185,7 +232,7 @@ include( 'connect.php' );
 				for($j=0;$j<$count_sqlage;$j++){ 
 					$array_sqlage[$j]=mysql_fetch_array($result_sqlage);	
 					//echo "<tr><td>".$array_sqlage[$j][0]."</td>";
-					echo "<td>".$array_sqlage[$j]['COUNT( * )']."</td>";
+					//echo "<td>".$array_sqlage[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
 	 			}
 			}
@@ -202,7 +249,7 @@ include( 'connect.php' );
 				for($j=0;$j<$count_sqleducation;$j++){ 
 					$array_sqleducation[$j]=mysql_fetch_array($result_sqleducation);	
 					//echo "<tr><td>".$array_sqleducation[$j][0]."</td>";
-					echo "<td>".$array_sqleducation[$j]['COUNT( * )']."</td>";
+					//echo "<td>".$array_sqleducation[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
 	 			}
 			}
@@ -219,7 +266,7 @@ include( 'connect.php' );
 				for($j=0;$j<$count_sqljob;$j++){ 
 					$array_sqljob[$j]=mysql_fetch_array($result_sqljob);	
 					//echo "<tr><td>".$array_sqljob[$j][0]."</td>";
-					echo "<td>".$array_sqljob[$j]['COUNT( * )']."</td>";
+					//echo "<td>".$array_sqljob[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
 	 			}
 			}
@@ -236,7 +283,7 @@ include( 'connect.php' );
 				for($j=0;$j<$count_sqlmoney;$j++){ 
 					$array_sqlmoney[$j]=mysql_fetch_array($result_sqlmoney);	
 					//echo "<tr><td>".$array_sqlmoney[$j][0]."</td>";
-					echo "<td>".$array_sqlmoney[$j]['COUNT( * )']."</td>";
+					//echo "<td>".$array_sqlmoney[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
 	 			}
 			}
@@ -253,7 +300,7 @@ include( 'connect.php' );
 				for($j=0;$j<$count_sqllive;$j++){ 
 					$array_sqllive[$j]=mysql_fetch_array($result_sqllive);	
 					//echo "<tr><td>".$array_sqllive[$j][0]."</td>";
-					echo "<td>".$array_sqllive[$j]['COUNT( * )']."</td>";
+					//echo "<td>".$array_sqllive[$j]['COUNT( * )']."</td>";
 					//print_r($array_sqlsex);
 	 			}
 			}
