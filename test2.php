@@ -1,4 +1,4 @@
-<!----Rhoda 2017/12/010 修改---->
+<!----Rhoda 2017/12/21 修改---->
 <?php
 include( 'connect.php' );
 ?>
@@ -107,13 +107,16 @@ include( 'connect.php' );
 				$ABC=array();
 				$D=array();
  				foreach ($rs as $key=>$value){
-					array_push($array_key,$key);
+					if (preg_match("/other/i", $key)==false) {
+						array_push($array_key,$key);
+					}
 				}//print_r($array_key);
 				$count_key=count($array_key);
 				//刪除前8個
 				for($i=0;$i<8;$i++){
 					unset($array_key[$i]);
 				}
+				
 				
 		}
 		//key分類ABC
@@ -176,46 +179,56 @@ include( 'connect.php' );
 //sql----------------------------------------------------------------------------------------------------------------------------------//
 		//sql_sex
 		$f=array();
+		$xx=array();
 		for($b=0;$b<$count_sex;$b++){
 			echo "<tr>";
 			for($a=0;$a<$count_abc;$a++){
 				$aa=$array_sex[$b]['code'];
+				if($ABC[$a]!='12X9X794'&&$ABC[$a]!='12X12X788'&&$ABC[$a]!='12X11X810'){
 				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101`='$aa' GROUP BY  `$ABC[$a]`";
     			$result_sqlsex = mysql_query($sex) or die('query error0');
 				$count_sqlsex=mysql_num_rows($result_sqlsex); 
 			
 				for($j=0;$j<$count_sqlsex;$j++){ 
 					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);
-					if($array_sqlsex[$j][0]==""&&$array_sqlsex[$j][0]=='-oth-'){
+					if($array_sqlsex[$j][0]==''||$array_sqlsex[$j][0]=='-oth-'){
 						unset($array_sqlsex[$j]);
-					}//echo $array_sqlsex[$j][0]." ".$array_sqlsex[$j][1]."<br>";
-				}//print_r($array_sqlsex);
-				$first=explode("X",$ABC[$a]);
+					}
+					if($array_sqlsex[$j][0]!=""){echo "<td>".$array_sqlsex[$j][0]."</td><td>".$array_sqlsex[$j][1]."</td>";}
+				}
+				//print_r($array_sqlsex);
+				/*$first=explode("X",$ABC[$a]);
 				$second=explode("X",$ABC[$a+1]);
 				$firstQid=mb_substr($first[2],0,3,"utf-8");
 				$secondQid=mb_substr($second[2],0,3,"utf-8");//echo $firstQid." ".$secondQid."<br>";	
 				if($firstQid!=$secondQid){
 					for($i=0;$i<$count_question;$i++){ 	
 						if($firstQid==$array_question[$i]['qid']){	
-							if($array_question[$i]['type']!='M'){//如果不是多選
+							if($array_question[$i]['type']=='L'||$array_question[$i]['type']=='F'){//如果不是多選
 								for($ii=0;$ii<$count_answer;$ii++){ //比對選項數量
 									if($firstQid==$array_answer[$ii]['qid']){
 										$f_count+=1;
 									}
 								}
 								for($x=1;$x<=$f_count;$x++){
-									for($j=0;$j<$count_sqlsex;$j++){ 
-										if(in_array($x,$array_sqlsex[$j][0])==false){
-											echo "<td>0</td>";
-										}else{
-											echo "<td>".$array_sqlsex[$j][1]."</td>";
-										}
-									}
+									array_push($xx,$x);
+								}//print_r($xx);echo "<br>";
+								if(in_array($xx,$array_sqlsex[$j][0])==false){
+									echo "<td>n</td>";
+								}else{
+									echo "<td>".$array_sqlsex[$j][1]."</td>";
 								}
+								//print_r($xx);
+								//in_array($x,$array_sqlsex[$j][0])==false
+								//echo $f_count."<br>";
 								$f_count=0;
+							}else{
+								//echo "<td>".$array_sqlsex[$j][1]."</td>";
 							}
 						}
 					}
+				}*/
+				
 				}
 			}
 		}
