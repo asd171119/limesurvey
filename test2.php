@@ -1,4 +1,4 @@
-<!----Rhoda 2017/12/21 修改---->
+<!----Rhoda 2017/12/23 修改---->
 <?php
 include( 'connect.php' );
 ?>
@@ -128,7 +128,7 @@ include( 'connect.php' );
 		}//print_r($ABC);
 		$count_abc=count($ABC);
 		
-		//sex
+		/*//sex
 		$sql_sex="SELECT `code` FROM `lime_answers` WHERE `qid`='775' AND `language`='zh-Hant-TW'";
  		$result_sex = mysql_query($sql_sex);
 		$count_sex=mysql_num_rows($result_sex); 
@@ -175,27 +175,39 @@ include( 'connect.php' );
 	
      	for($i=0;$i<$count_live;$i++){ 
  			$array_live[$i]=mysql_fetch_array($result_live);
- 	 	};//print_r($array_live);
+ 	 	};//print_r($array_live);*/
 //sql----------------------------------------------------------------------------------------------------------------------------------//
 		//sql_sex
 		$f=array();
 		$xx=array();
-		for($b=0;$b<$count_sex;$b++){
+		//for($b=0;$b<$count_sex;$b++){
 			echo "<tr>";
+			echo "<td>選項</td>";	
+			echo "<td>統計</td>";	
+			//echo "<td>選項</td>";s	
+			//echo "<td>統計</td>";	
 			for($a=0;$a<$count_abc;$a++){
-				$aa=$array_sex[$b]['code'];
-				if($ABC[$a]!='12X9X794'&&$ABC[$a]!='12X12X788'&&$ABC[$a]!='12X11X810'){
-				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101`='$aa' GROUP BY  `$ABC[$a]`";
+				//$aa=$array_sex[$b]['code'];
+				if($ABC[$a]!='12X9X794'&&$ABC[$a]!='12X12X788'&&$ABC[$a]!='12X11X810'&&$ABC[$a]!='12X11X809'){
+				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101` GROUP BY  `$ABC[$a]`,`12X12X775D101`";
     			$result_sqlsex = mysql_query($sex) or die('query error0');
 				$count_sqlsex=mysql_num_rows($result_sqlsex); 
-			
+					$dd=$a+1;
+			echo "<tr><td>".$ABC[$a]."</td>";
 				for($j=0;$j<$count_sqlsex;$j++){ 
 					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);
 					if($array_sqlsex[$j][0]==''||$array_sqlsex[$j][0]=='-oth-'){
 						unset($array_sqlsex[$j]);
 					}
-					if($array_sqlsex[$j][0]!=""){echo "<td>".$array_sqlsex[$j][0]."</td><td>".$array_sqlsex[$j][1]."</td>";}
-				}
+					
+					if($array_sqlsex[$j][0]==""){
+						echo "<td>空</td>";
+					}else{
+						echo "<td>".$array_sqlsex[$j][0]."</td>";
+					}
+					echo "<td>".$array_sqlsex[$j][1]."</td>";
+					
+				} echo "</tr>";
 				//print_r($array_sqlsex);
 				/*$first=explode("X",$ABC[$a]);
 				$second=explode("X",$ABC[$a+1]);
@@ -231,7 +243,7 @@ include( 'connect.php' );
 				
 				}
 			}
-		}
+		//}
 		echo "</tr>";
 		//sql_age
 		for($b=0;$b<$count_age;$b++){
