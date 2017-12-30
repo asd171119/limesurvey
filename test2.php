@@ -177,6 +177,8 @@ include( 'connect.php' );
  			$array_live[$i]=mysql_fetch_array($result_live);
  	 	};//print_r($array_live);*/
 //sql----------------------------------------------------------------------------------------------------------------------------------//
+		//問題:重複了很多次
+		
 		//sql_sex
 		$f=array();
 		$xx=array();
@@ -187,25 +189,43 @@ include( 'connect.php' );
 			//echo "<td>選項</td>";s	
 			//echo "<td>統計</td>";	
 			for($a=0;$a<$count_abc;$a++){
-				//$aa=$array_sex[$b]['code'];
+				
 				if($ABC[$a]!='12X9X794'&&$ABC[$a]!='12X12X788'&&$ABC[$a]!='12X11X810'&&$ABC[$a]!='12X11X809'){
-				$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101` GROUP BY  `$ABC[$a]`,`12X12X775D101`";
-    			$result_sqlsex = mysql_query($sex) or die('query error0');
-				$count_sqlsex=mysql_num_rows($result_sqlsex); 
-					$dd=$a+1;
-			echo "<tr><td>".$ABC[$a]."</td>";
-				for($j=0;$j<$count_sqlsex;$j++){ 
-					$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);
-					if($array_sqlsex[$j][0]==''||$array_sqlsex[$j][0]=='-oth-'){
-						unset($array_sqlsex[$j]);
-					}
+					$first=explode("X",$ABC[$a]);
+					$firstQid=mb_substr($first[2],0,3,"utf-8");
+					$type="SELECT  `type` FROM  `lime_questions` WHERE `qid`='$firstQid'";
+					$result_sqltype = mysql_query($type) or die('query error0');
+					$count_sqltype=mysql_num_rows($result_sqltype); 
+					for($i=0;$i<$count_sqltype;$i++){ 
+ 						$array_type[$i]=mysql_fetch_array($result_sqltype);
+						echo $array_type[$i]['type'];
+						if($array_type[$i]['type']=='M'){
+							$sex="SELECT  `$ABC[$a]` , COUNT( * ) FROM  `lime_survey_12` WHERE  `12X12X775D101` GROUP BY  `12X12X775D101`,`$ABC[$a]`";
+    						$result_sqlsex = mysql_query($sex) or die('query error0');
+							$count_sqlsex=mysql_num_rows($result_sqlsex); 
+							
+							for($j=0;$j<$count_sqlsex;$j++){ 
+								$array_sqlsex[$j]=mysql_fetch_array($result_sqlsex);
+								if($array_sqlsex[$j][0]=='-oth-'){//$array_sqlsex[$j][0]==''||
+									unset($array_sqlsex[$j]);
+								}
 					
-					if($array_sqlsex[$j][0]==""){
-						echo "<td>空</td>";
-					}else{
-						echo "<td>".$array_sqlsex[$j][0]."</td>";
-					}
-					echo "<td>".$array_sqlsex[$j][1]."</td>";
+								if($array_sqlsex[$j][0]==""){
+									echo "<td>空</td>";
+								}else{
+									echo "<td>".$array_sqlsex[$j][0]."</td>";
+								}
+					
+								echo "<td>".$array_sqlsex[$j][1]."</td>";
+							}
+ 	 					}else{
+							/*for($j=0;$j<$count_sqlsex;$j++){
+								echo "<td>".$array_sqlsex[$j][0]."</td>";
+								echo "<td>".$array_sqlsex[$j][1]."</td>";
+							}*/
+							//echo "<td>".$array_sqlsex[$j][1]."</td>";
+						}//print_r($array_type);
+					
 					
 				} echo "</tr>";
 				//print_r($array_sqlsex);
