@@ -186,11 +186,22 @@ include( 'connect.php' );
 			$ckey=array_keys($c[$ccode[$i]]);
 			$bkey=array_keys($b[$bcode[$i]]);
 			$dd=array_diff($ckey,$bkey);
-			print_r(array_keys($c[$ccode[$i]]));
-			print_r(array_keys($b[$bcode[$i]]));
-			print_r($dd);
-			echo "<br>";
-			
+			//print_r(array_keys($c[$ccode[$i]]));
+			//print_r(array_keys($b[$bcode[$i]]));
+			//print_r($dd);
+			//echo "<br>";
+			echo "<tr>";
+			foreach($b[$bcode[$i]] as $value_f){
+				//echo "<tr><td>".$q_f[$i]."</td>";
+				echo "<td>".$value_f."</td>";
+			}echo "</td><tr>";
+			foreach($c[$ccode[$i]] as $value_f){
+				echo "<td>".$value_f."</td>";
+			}
+			foreach($c2[$ccode[$i]] as $value_f){
+				echo "<td>".$value_f."</td>";
+			}
+			echo "</tr>";
 			/*if(array_diff($ckey,$bkey)){
 				print_r(array_keys($c[$ccode[$i]]));
 				print_r(array_keys($b[$bcode[$i]]));
