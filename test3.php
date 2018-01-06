@@ -183,13 +183,23 @@ include( 'connect.php' );
 		$ccode=array_keys($c);
 		$bcode=array_keys($b);
 		for($i=0;$i<119;$i++){
-			print_r(array_keys($c[$ccode[$i]]))."<br><br>";
-			print_r(array_keys($b[$bcode[$i]]))."<br><br>";
-			if(in_array(array_keys($c[$ccode[$i]]),array_keys($b[$bcode[$i]]))){
+			$ckey=array_keys($c[$ccode[$i]]);
+			$bkey=array_keys($b[$bcode[$i]]);
+			$dd=array_diff($ckey,$bkey);
+			print_r(array_keys($c[$ccode[$i]]));
+			print_r(array_keys($b[$bcode[$i]]));
+			print_r($dd);
+			echo "<br>";
+			
+			/*if(array_diff($ckey,$bkey)){
+				print_r(array_keys($c[$ccode[$i]]));
+				print_r(array_keys($b[$bcode[$i]]));
 				echo '有<br>';
 			}else{
+				print_r(array_keys($c[$ccode[$i]]));
+				print_r(array_keys($b[$bcode[$i]]));
 				echo '空<br>';
-			}
+			}*/
 		}
 		
 		
